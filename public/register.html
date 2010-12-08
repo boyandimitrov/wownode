@@ -1,0 +1,44 @@
+<html>
+
+<head>
+
+<script type="text/javascript" src='/jqueryui.1.8.6/js/jquery-1.4.2.min.js'></script>
+
+</head>
+
+
+<body>
+
+<script type="text/javascript">
+
+function login_click()
+{
+	 $.post("/register", $("#id_register_form").serialize(),
+		function(data)
+		{
+			var result = $.parseJSON(data);
+			
+			if( result.error == 0 )
+			{
+				alert( 'okii' );
+			}
+			else
+				{
+				 alert('kur za leski');
+				}
+	 	});
+}
+
+</script>
+
+<form id="id_register_form">
+	Login:<input type="text" id="id_login" name="id_login"/>
+	Password:<input type="password" id="id_password" name="id_password"/>
+	Confirm:<input type="password" id="id_confirm" name="id_confirm"/>
+	<input id="id_register_button" type="button" value="Ok" onclick="login_click();"/>
+	
+</form>
+
+</body>
+
+</html>

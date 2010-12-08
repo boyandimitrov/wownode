@@ -1,0 +1,35 @@
+<html>
+
+<head>
+
+<script type="text/javascript" src='/jqueryui.1.8.6/js/jquery-1.4.2.min.js'></script>
+
+</head>
+
+
+<body>
+
+<script type="text/javascript">
+
+function login_click()
+{
+	 $.post("/login", $("#id_login_form").serialize(),
+		function(data)
+		{
+			var result = $.getJSON(data);
+	 	});
+}
+
+</script>
+
+<form id="id_login_form">
+	Login:<input type="text" id="id_login" name="id_login"/>
+	Password:<input type="password" id="id_password" name="id_password"/>
+	<input id="id_login_button" type="button" value="Login" onclick="login_click();"/>
+	<a id="id_signin_button" href="/register.html">Sign in</a>
+	
+</form>
+
+</body>
+
+</html>
