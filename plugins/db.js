@@ -1,7 +1,7 @@
 
 
 
-exports.Register = function( app )
+exports.Register = function( app, next )
 {
 	sys = require("sys");
 	test = require("assert");
@@ -23,9 +23,10 @@ exports.Register = function( app )
 	db.open(
 		function(err, db) 
 		{ 
-			sys.puts( sys.inspect( err ) );
-			sys.puts( sys.inspect( db ) );
-			
+			if( next )
+			{
+				next();
+			}
 		});
 	
 	app.db = db; 

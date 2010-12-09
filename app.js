@@ -25,9 +25,7 @@ var app = express.createServer(
 		  express.staticProvider(__dirname + '/public')
 		);
 
-require( './plugins/db.js').Register( app );
-require( './plugins/user.js').Register( app );
-
+require( './plugins/db.js').Register( app, function() { require( './plugins/user.js').Register( app ); } );
 
 
 // Example requests:

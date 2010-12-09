@@ -1,38 +1,32 @@
-exports.Register = function( app )
+exports.Register = function( app, next )
 {
 	var db = app.db;
 	var sys = require('sys');
 	
+	db.collection('user', function(err, users) 
+	{
+		users.indexInformation( function(err, indexes )
+		{
+			sys.puts(sys.inspect(indexes));
+		});
+	});
+		
+	
 	app.post('/login', function( req, res ) {
 		
-		/*
-		var ModelUser = db.model('User');
-		ModelUser.find({ login: req.body.id_login } ).all(function(arr){
-			
-			var result = {};
-			
-			sys.puts( sys.inspect( arr[0] ) );
-			
-			
-			
-			if( arr.lenght == 1 && arr[0].password == req.body.id_password )
-			{
-				result.error = 0;
-				
-				
-				
-				req.session.current_user = arr[0].ObjectId;
-			}
-			else
-			{
-				result.error = 1;
-				result.error = "login failed";
-			}
-			
-			res.send(JSON.stringify(result));  
-			
-		});*/
-	});
+		db.collection('user', function(err, users) 
+		{
+			users.find({login:req.body.id_login}, 
+				function(err, cursor)
+				{
+					cursor.nextObject(
+						function(err, user)
+						{
+							res.send( JSON.stringify(user) );
+						});
+				});
+		});
+    });
 
 	app.post('/register', function( req, res ) {
 		var user = {};
@@ -59,6 +53,11 @@ exports.Register = function( app )
 		  }
 		  res.send(body + '<p>viewed <strong>' + req.session.views + '</strong> times.</p>');
 		});
+	
+	if( next )
+	{
+		next();
+	}
 	
 	/*
 	app.get('/user/create/:name', function(req, res)

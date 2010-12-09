@@ -16,7 +16,9 @@ function login_click()
 	 $.post("/login", $("#id_login_form").serialize(),
 		function(data)
 		{
-			var result = $.getJSON(data);
+		 	var result = $.parseJSON(data);
+		 	
+		 	alert( result._id );
 	 	});
 }
 
