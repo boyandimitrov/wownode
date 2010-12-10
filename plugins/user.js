@@ -1,46 +1,34 @@
 exports.Register = function( app, next )
 {
-	var db = app.db;
 	var sys = require('sys');
-	
-	db.collection('user', function(err, users) 
-	{
-		users.indexInformation( function(err, indexes )
+
+	//ensure index for user.login
+	app.Dal.CreateCollection('user', [ ['login', 1] ], function( err, coll ) 
 		{
-			sys.puts(sys.inspect(indexes));
+			if( next )
+			{ 
+				next();
+			} 
 		});
-	});
-		
+	
 	
 	app.post('/login', function( req, res ) {
-		
-		db.collection('user', function(err, users) 
-		{
-			users.find({login:req.body.id_login}, 
-				function(err, cursor)
+		app.Dal.Find('user', {login:req.body.id_login}, function(err, user)
 				{
-					cursor.nextObject(
-						function(err, user)
-						{
-							res.send( JSON.stringify(user) );
-						});
+					res.send( JSON.stringify(user) );
 				});
-		});
-    });
-
+	});
+	
 	app.post('/register', function( req, res ) {
 		var user = {};
 		user.login = req.body.id_login;
 		user.password = req.body.id_password;
 		
-		db.collection('user', function(err, users) 
-		{
-			users.insert( user, function(e, u) {
-				var result = {error:0};
-				//res.sendHeader(200, { "Content-Type" : "text/json" });  
-				res.send(JSON.stringify(u));  
-			} );
-		}); 
+		app.Dal.Insert('user', user, function(err, result)
+			{
+			
+				res.send(JSON.stringify( {result:result, err:err} ));
+			});
 	});
 
 	app.get('/session', function(req, res){
@@ -58,19 +46,4 @@ exports.Register = function( app, next )
 	{
 		next();
 	}
-	
-	/*
-	app.get('/user/create/:name', function(req, res)
-	{
-		//sys.puts( sys.inspect(db) );
-		
-		var ModelUser = db.model('User');
-		var user = new ModelUser();
-		user.first = req.params.name;
-		user.save(function() 
-				{
-					res.send('');
-					res.end('');
-				});
-	});*/
 };
